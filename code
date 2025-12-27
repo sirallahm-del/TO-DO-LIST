@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_TASKS 100
+#define MAX_LEN 100
+
+char tasks[MAX_TASKS][MAX_LEN]; 
+int done[MAX_TASKS];            
+int taskCount = 0;              
+void addTask() {
+    if(taskCount >= MAX_TASKS) {
+        printf("Task list is full!\n");
+        return;
+    }
+    printf("Enter the task: ");
+    getchar(); // pour enlever le retour de ligne précédent
+    fgets(tasks[taskCount], MAX_LEN, stdin);
+    tasks[taskCount][strcspn(tasks[taskCount], "\n")] = '\0'; // enlever '\n'
+    done[taskCount] = 0; // tâche non faite
+    taskCount++;
+    printf("Task added!\n");
+}
+
+void showTasks() {
+    if(taskCount == 0) {
+        printf("No tasks!\n");
+        return;
+    }
+    for(int i = 0; i < taskCount; i++) {
+        printf("%d. [%c] %s\n", i+1, done[i] ? 'X' : ' ', tasks[i]);
+    }
+}
+void completeTask() {
+    int num;
+    printf("Enter task number to complete: ");
+    scanf("%d", &num);
+    if(num < 1 || num > taskCount) {
+        printf("Invalid task number!\n");
+        return;
+    }
+    done[num-1] = 1;
+    printf("Task completed!\n");
+}
+void deleteTask() {
+    int num;
+    printf("Enter task number to delete: ");
+    scanf("%d", &num);
+    if(num < 1 || num > taskCount) {
+        printf("Invalid task number!\n");
+        return;
+    }
+    for(int i = num-1; i < taskCount-1; i++) {
+        strcpy(tasks[i], tasks[i+1]);
+        done[i] = done[i+1];
+    }
+    taskCount--;
+    printf("Task deleted!\n");
+}
+
+void menu() {
+    int choice;
+    while(1) {
+        printf("\n--- To-Do List Menu ---\n");
+        printf("1. Add task\n");
+        printf("2. Show tasks\n");
+        printf("3. Complete task\n");
+        printf("4. Delete task\n");
+        printf("5. Exit\n");
+        printf("Choose an option: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1: addTask(); break;
+            case 2: showTasks(); break;
+            case 3: completeTask(); break;
+            case 4: deleteTask(); break;
+            case 5: return;
+            default: printf("Invalid choice!\n");
+        }
+    }
+}
+int main() {
+    printf("Welcome to Mini To-Do List!\n");
+    menu();
+    printf("Goodbye!\n");
+    return 0;
+}
